@@ -1,6 +1,17 @@
 FROM golang:1.4
 
-RUN go get golang.org/x/tools/cmd/cover
+# Install Gopm
+ RUN mkdir -p /go/src/github.com/gpmgo \
+   && cd /go/src/github.com/gpmgo \
+   && curl -o gopm.zip http://gopm.io/api/v1/download?pkgname=github.com/gpmgo/gopm\&revision=dev --location \
+   && unzip gopm.zip \
+   && mv $(ls | grep "gopm-") gopm \
+   && rm gopm.zip \
+   && cd gopm \
+   && go install
+
+# RUN go get golang.org/x/tools/cmd/cover
+RUN gopm bin -v golang.org/x/tools/cmd/cover
 
 ENV GOPATH $GOPATH:/go/src/github.com/docker/libcontainer/vendor
 RUN go get github.com/docker/docker/pkg/term
